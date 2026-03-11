@@ -19,9 +19,7 @@ class ModuleEngine:
     def SessionLocal(self) -> sessionmaker:
         if self._SessionLocal is None:
             self._SessionLocal = sessionmaker(
-                autocommit=False,
-                autoflush=False,
-                bind=self.engine,
+                autocommit=False, autoflush=False, bind=self.engine
             )
         return self._SessionLocal
 

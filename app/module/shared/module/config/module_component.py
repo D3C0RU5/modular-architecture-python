@@ -1,17 +1,35 @@
+# shared/module/config/module_component.py
+from collections.abc import Callable
+
+from fastapi import APIRouter
+from sqlalchemy.orm import sessionmaker
+
+
 class ModuleComponent:
-    def __init__(self):
-        self.sqlalchemy_modules: list = []
+    """Base para implementação de módulo"""
 
-    def register_sqlalchemy(self, module):
-        self.sqlalchemy_modules.append(module)
+    def __init__(self, name: str, schema: str):
+        self.name = name
+        self.schema = schema
+        self.router: APIRouter | None = None
+        self.engine = None
+        self.SessionLocal: sessionmaker | None = None
 
-    def load_models(self):
-        for module in self.sqlalchemy_modules:
-            module.load_models()
+    def configure_engine(self, engine_factory: Callable):
+        self.engine = engine_factory()
 
-    def migrations_paths(self):
-        return [
-            module.migrations_path
-            for module in self.sqlalchemy_modules
-            if module.migrations_path
-        ]
+    def configure_session(self, session_factory: Callable):
+        self.SessionLocal = session_factory()
+
+    def get_session(self):
+        if not self.SessionLocal:
+            raise RuntimeError(f"Session não configurada para {self.name}")
+        return self.SessionLocal()
+
+    def include_router(self, app):
+        if self.router:
+            app.include_router(self.router, prefix=f"/{self.name}")
+
+    def init(self, app):
+        """Método que cada módulo deve implementar para inicialização"""
+        raise NotImplementedError()

@@ -1,9 +1,6 @@
-from sqlalchemy.orm import sessionmaker
+from .module_engine import ModuleEngine
 
-from .module_engine import engine
 
-SessionLocal = sessionmaker(
-    bind=engine,
-    autoflush=False,
-    autocommit=False,
-)
+def create_session(database_url: str):
+    engine = ModuleEngine(database_url)
+    return engine.get_session()

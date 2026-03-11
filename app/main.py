@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 
-from app.module.template.module import TemplateModule
+from app.module.template.module import TemplateModuleComponent
 
+app = FastAPI(title="OneClick Modular App")
+
+# Lista de módulos
 modules = [
-    TemplateModule(),
+    TemplateModuleComponent(),
+    # Outros módulos podem ser adicionados aqui
 ]
 
-app = FastAPI()
-
+# Inicializa todos os módulos
 for module in modules:
-    module.load_models()
+    module.init(app)

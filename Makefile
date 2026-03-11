@@ -1,4 +1,4 @@
-.PHONY: help setup install-dev install-prod compile upgrade lint format typecheck check run docker-build docker-up docker-down clean
+.PHONY: help setup install-dev install-prod compile upgrade lint format typecheck check run docker-build docker-up docker-down clean migrate-create migrate-upgrade debug
 
 # ----------------------------
 # Config
@@ -23,11 +23,13 @@ $(VENV)/bin/python:
 # ----------------------------
 
 help:
-	@echo "setup        Create venv and install dev dependencies"
-	@echo "compile      Compile requirements"
-	@echo "upgrade      Upgrade dependencies"
-	@echo "run          Run FastAPI"
-	@echo "check        Run format + lint + typecheck"
+	@echo "setup               Create venv and install dev dependencies"
+	@echo "compile             Compile requirements"
+	@echo "upgrade             Upgrade dependencies"
+	@echo "run                 Run FastAPI"
+	@echo "check               Run format + lint + typecheck"
+	@echo "migrate-create      Create migration for a module (MODULE=<name>)"
+	@echo "migrate-upgrade     Apply migrations for a module (MODULE=<name>)"
 
 # ----------------------------
 # Setup
@@ -71,6 +73,7 @@ check: format lint typecheck
 # ----------------------------
 # Application
 # ----------------------------
+
 debug: $(VENV)/bin/python
 	$(PYTHON) -m debugpy --listen 0.0.0.0:5678 -m uvicorn app.main:app --host 0.0.0.0 --port 3000 --reload
 
@@ -98,3 +101,33 @@ clean:
 	find . -type d -name "__pycache__" -exec rm -r {} +
 	find . -type d -name ".pytest_cache" -exec rm -r {} +
 
+# ----------------------------
+# Migrations (by module)
+# ----------------------------
+
+migrate-create:
+ifndef MODULE
+	$(error MODULE not defined. Ex: make migrate-create MODULE=template)
+endif
+	@echo "Creating migration for module $(MODULE)..."
+	@export PYTHONPATH=$$PYTHONPATH:/app/app/module && \
+	alembic -c app/module/$(MODULE)/persistence/alembic/alembic.ini revision --autogenerate -m "autogenerate $(MODULE) tables"
+
+migrate-upgrade:
+ifndef MODULE
+	$(error MODULE not defined. Ex: make migrate-upgrade MODULE=template)
+endif
+	@echo "Applying migrations for module $(MODULE)..."
+	@export PYTHONPATH=$$PYTHONPATH:/app/app/module && \
+	alembic -c app/module/$(MODULE)/persistence/alembic/alembic.ini upgrade head
+
+migrate-downgrade:
+ifndef MODULE
+	$(error MODULE not defined. Ex: make migrate-downgrade MODULE=template)
+endif
+ifndef REV
+	$(error REV not defined. Ex: make migrate-downgrade MODULE=template REV=-1)
+endif
+	@echo "Reverting migrations for module $(MODULE) to revision $(REV)..."
+	@export PYTHONPATH=$$PYTHONPATH:/app/app/module && \
+	alembic -c app/module/$(MODULE)/persistence/alembic/alembic.ini downgrade $(REV)

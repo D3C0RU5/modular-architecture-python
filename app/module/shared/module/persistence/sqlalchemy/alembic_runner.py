@@ -30,6 +30,7 @@ class AlembicModuleRunner:
             connection.execute(
                 text(f"CREATE SCHEMA IF NOT EXISTS {self.module.schema}")
             )
+            connection.commit()
 
             context.configure(
                 connection=connection,

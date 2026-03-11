@@ -33,5 +33,4 @@ def list_templates(
     ],
 ):
     templates = use_case.execute()
-    templates[0].
     return ListTemplatesResponse(state="success", data=templates)

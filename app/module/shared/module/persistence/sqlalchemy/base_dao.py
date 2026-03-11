@@ -1,46 +1,21 @@
-# shared/module/persistence/sqlalchemy/base_dao.py
 from typing import Generic, TypeVar
 
-from shared.module.persistence.sqlalchemy.base_dto import BaseDTO
+from shared.module.persistence.sqlalchemy.has_from_model import HasFromModel
 from shared.module.persistence.sqlalchemy.module_engine import ModuleEngine
 
-T = TypeVar("T")  # SQLAlchemy model
-U = TypeVar("U", bound=BaseDTO)  # DTO Pydantic
-V = TypeVar("V")  # TypedDict de retorno
+T = TypeVar("T")
+U = TypeVar("U", bound=HasFromModel)
 
 
-class BaseDAO(Generic[T, U, V]):
-    def __init__(
-        self, model: type[T], dto: type[U], typed: type[V], engine: ModuleEngine
-    ):
+class BaseDAO(Generic[T, U]):
+    def __init__(self, model: type[T], dto_class: type[U], engine: ModuleEngine):
         self.model = model
-        self.dto = dto
-        self.typed = typed
+        self.dto_class = dto_class
         self.engine = engine
 
-    def create(self, **kwargs) -> U:
-        with self.engine.get_session() as session:
-            instance = self.model(**kwargs)
-            session.add(instance)
-            session.commit()
-            session.refresh(instance)
-            return self.dto.model_validate(instance)
-
-    def list_all(self) -> list[V]:
+    def list_all(self) -> list[U]:
         with self.engine.get_session() as session:
             return [
-                self.typed(**self.dto.model_validate(obj).model_dump())
+                self.dto_class.from_model(obj)
                 for obj in session.query(self.model).all()
             ]
-
-    def get_by_id(self, id) -> U | None:
-        with self.engine.get_session() as session:
-            obj = session.get(self.model, id)
-            return self.dto.model_validate(obj) if obj else None
-
-    def delete(self, id) -> None:
-        with self.engine.get_session() as session:
-            obj = session.get(self.model, id)
-            if obj:
-                session.delete(obj)
-                session.commit()

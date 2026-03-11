@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 
 class Template(BaseModel):
-    __tablename__ = "templates"
+    __tablename__ = "template"
     __table_args__ = {"schema": "templates"}
 
     name: Mapped[str] = mapped_column(String(255))

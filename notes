@@ -1,0 +1,2 @@
+alembic -c app/module/template/alembic.ini revision --autogenerate -m "create template tables"
+export PYTHONPATH=$PYTHONPATH:/app/app/module

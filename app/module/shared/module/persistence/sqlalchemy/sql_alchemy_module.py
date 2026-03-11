@@ -1,38 +1,39 @@
+import importlib
+import pkgutil
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 
 class SqlAlchemyModule:
-    def __init__(self, models_package: str, schema: str, migrations_path: str):
+    def __init__(self, models_package: str, database_url: str):
         self.models_package = models_package
-        self.schema = schema
-        self.migrations_path = migrations_path
+        self.database_url = database_url
         self._engine = None
         self._SessionLocal = None
 
     def load_models(self):
-        import importlib
+        """Carrega todos os models do pacote para registrar no Base.metadata"""
 
-        importlib.import_module(self.models_package)
+        # Importa o pacote raiz
+        package = importlib.import_module(self.models_package)
+
+        # Percorre todos os submódulos e importa
+        if hasattr(package, "__path__"):
+            for loader, modname, ispkg in pkgutil.walk_packages(
+                package.__path__, package.__name__ + "."
+            ):
+                importlib.import_module(modname)
 
     @property
     def engine(self):
-        """Retorna a engine SQLAlchemy"""
         if self._engine is None:
-            # engine_url precisa ser passado aqui ou configurado externamente
-            from app.module.template.infra.db.engine import DATABASE_URL
-
-            self._engine = create_engine(DATABASE_URL, future=True)
+            self._engine = create_engine(self.database_url, future=True)
         return self._engine
 
-    @property
-    def session(self):
-        """Factory de session"""
+    def get_session(self):
         if self._SessionLocal is None:
             self._SessionLocal = sessionmaker(
                 bind=self.engine, autoflush=False, autocommit=False
             )
-        return self._SessionLocal
-
-    def get_session(self):
-        return self.session()
+        return self._SessionLocal()

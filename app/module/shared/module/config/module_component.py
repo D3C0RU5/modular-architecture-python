@@ -1,4 +1,3 @@
-# app/module/shared/module/config/module_component.py
 from collections.abc import Callable
 
 from fastapi import FastAPI

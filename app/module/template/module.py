@@ -1,4 +1,3 @@
-# app/module/template/module_component.py
 from fastapi import FastAPI
 from shared.module.persistence.sqlalchemy.sql_alchemy_module import SqlAlchemyModule
 from sqlalchemy import text
@@ -16,12 +15,9 @@ class TemplateModuleComponent:
         )
 
     def init(self, app: FastAPI):
-        # Carrega models
         self.sql_module.load_models()
 
-        # Cria schema
         with self.sql_module.engine.connect() as conn:
             conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {self.schema}"))
 
-        # Inclui router
         app.include_router(self.router)

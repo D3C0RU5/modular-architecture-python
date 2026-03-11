@@ -24,5 +24,4 @@ class ModuleEngine:
         return self._SessionLocal
 
     def get_session(self):
-        """Factory de session"""
         return self.SessionLocal()

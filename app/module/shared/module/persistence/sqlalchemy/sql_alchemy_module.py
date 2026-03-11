@@ -13,12 +13,9 @@ class SqlAlchemyModule:
         self._SessionLocal = None
 
     def load_models(self):
-        """Carrega todos os models do pacote para registrar no Base.metadata"""
 
-        # Importa o pacote raiz
         package = importlib.import_module(self.models_package)
 
-        # Percorre todos os submódulos e importa
         if hasattr(package, "__path__"):
             for loader, modname, ispkg in pkgutil.walk_packages(
                 package.__path__, package.__name__ + "."

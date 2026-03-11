@@ -33,5 +33,5 @@ def list_templates(
     ],
 ):
     templates = use_case.execute()
-    data = [{"name": t.name, "created": t.created_at} for t in templates]
-    return ListTemplatesResponse(state="success", data=data)
+    templates[0].
+    return ListTemplatesResponse(state="success", data=templates)

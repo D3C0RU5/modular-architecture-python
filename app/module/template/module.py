@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+from injectq.integrations.fastapi import setup_fastapi
 from shared.module.persistence.sqlalchemy.sql_alchemy_module import SqlAlchemyModule
 from sqlalchemy import text
 from template.http.rest.controller.template_controller import router as template_router
+from template.utils.di_container import container
 
 
 class TemplateModuleComponent:
@@ -19,5 +21,6 @@ class TemplateModuleComponent:
 
         with self.sql_module.engine.connect() as conn:
             conn.execute(text(f"CREATE SCHEMA IF NOT EXISTS {self.schema}"))
+        setup_fastapi(container, app)
 
         app.include_router(self.router)

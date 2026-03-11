@@ -1,0 +1,6 @@
+POST http://127.0.0.1:3001/templates/
+Content-Type: application/json
+
+{
+  "name": "Meu Template Teste"
+}

@@ -78,7 +78,7 @@ debug: $(VENV)/bin/python
 	$(PYTHON) -m debugpy --listen 0.0.0.0:5678 -m uvicorn app.main:app --host 0.0.0.0 --port 3000 --reload
 
 run: $(VENV)/bin/python
-	$(PYTHON) -m uvicorn app.main:app --host 0.0.0.0 --port 3000 --reload
+	$(PYTHON) -m uvicorn app.main:app --host 0.0.0.0 --port 3001 --reload
 
 # ----------------------------
 # Docker

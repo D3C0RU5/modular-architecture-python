@@ -1,0 +1,40 @@
+{
+  "name": "Python 3 & PostgreSQL",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/app",
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": true,
+  "forwardPorts": [
+    3000,
+    5678
+  ],
+  "postCreateCommand": "make setup",
+  "postStartCommand": "make debug",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/app/.venv/bin/python",
+        "python.analysis.typeCheckingMode": "strict",
+        "python.analysis.autoImportCompletions": true,
+        "editor.formatOnSave": true,
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.python"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "vscode.json-language-features"
+        },
+        "ruff.enable": true,
+        "ruff.organizeImports": true,
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false
+      }
+    }
+  }
+}

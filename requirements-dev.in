@@ -1,0 +1,11 @@
+-r requirements.in
+
+black
+ruff
+pyright
+pre-commit
+debugpy
+pip-tools
+setuptools
+pytest
+httpx

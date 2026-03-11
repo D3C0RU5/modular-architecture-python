@@ -17,7 +17,7 @@ class SqlAlchemyModule:
         package = importlib.import_module(self.models_package)
 
         if hasattr(package, "__path__"):
-            for loader, modname, ispkg in pkgutil.walk_packages(
+            for _loader, modname, _ispkg in pkgutil.walk_packages(
                 package.__path__, package.__name__ + "."
             ):
                 importlib.import_module(modname)

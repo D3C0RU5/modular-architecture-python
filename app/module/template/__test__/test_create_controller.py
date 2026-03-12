@@ -1,16 +1,14 @@
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
 from httpx import Response
-from template.http.rest.controller.template_controller import router
-
-app = FastAPI()
-app.include_router(router)
-client = TestClient(app)
 
 
-def test_create_template():
+def test_create_template(client):
     response: Response = client.post(
         "/templates", json={"name": "Teste", "content": "Conteúdo do template"}
     )
     assert response.status_code == 201
     assert response.json()["state"] == "success"
+
+
+def test_create_template_with_empty_object(client):
+    response: Response = client.post("/templates", json={})
+    assert response.status_code == 422

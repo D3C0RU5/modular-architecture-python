@@ -131,3 +131,6 @@ endif
 	@echo "Reverting migrations for module $(MODULE) to revision $(REV)..."
 	@export PYTHONPATH=$$PYTHONPATH:/app/app/module && \
 	alembic -c app/module/$(MODULE)/infra/db/alembic/alembic.ini downgrade $(REV)
+
+test:
+	$(PYTHON) -m pytest

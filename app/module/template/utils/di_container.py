@@ -6,11 +6,13 @@ from template.persistence.dao.template import TemplateDAO
 container = InjectQ.get_instance()
 
 
+# DAO
 @singleton
 class TemplateDAOSingleton(TemplateDAO):
     pass
 
 
+# UseCases
 @singleton
 class CreateTemplateUseCaseSingleton(CreateTemplateUseCase):
     def __init__(self, dao: TemplateDAOSingleton):

@@ -1,5 +1,8 @@
-from shared.module.persistence.sqlalchemy.alembic_runner import AlembicModuleRunner
 from template.module import TemplateModuleComponent
+
+from app.module.shared.module.persistence.sqlalchemy.alembic_runner import (
+    AlembicModuleRunner,
+)
 
 template_module = TemplateModuleComponent()
 

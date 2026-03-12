@@ -111,7 +111,7 @@ ifndef MODULE
 endif
 	@echo "Creating migration for module $(MODULE)..."
 	@export PYTHONPATH=$$PYTHONPATH:/app/app/module && \
-	alembic -c app/module/$(MODULE)/persistence/alembic/alembic.ini revision --autogenerate -m "autogenerate $(MODULE) tables"
+	alembic -c app/module/$(MODULE)/infra/db/alembic/alembic.ini revision --autogenerate -m "autogenerate $(MODULE) tables"
 
 migrate-upgrade:
 ifndef MODULE
@@ -119,7 +119,7 @@ ifndef MODULE
 endif
 	@echo "Applying migrations for module $(MODULE)..."
 	@export PYTHONPATH=$$PYTHONPATH:/app/app/module && \
-	alembic -c app/module/$(MODULE)/persistence/alembic/alembic.ini upgrade head
+	alembic -c app/module/$(MODULE)/infra/db/alembic/alembic.ini upgrade head
 
 migrate-downgrade:
 ifndef MODULE
@@ -130,4 +130,4 @@ ifndef REV
 endif
 	@echo "Reverting migrations for module $(MODULE) to revision $(REV)..."
 	@export PYTHONPATH=$$PYTHONPATH:/app/app/module && \
-	alembic -c app/module/$(MODULE)/persistence/alembic/alembic.ini downgrade $(REV)
+	alembic -c app/module/$(MODULE)/infra/db/alembic/alembic.ini downgrade $(REV)

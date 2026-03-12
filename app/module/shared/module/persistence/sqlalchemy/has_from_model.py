@@ -1,11 +1,10 @@
-from typing import (
-    Protocol,
-    Self,
-)
+from typing import Protocol, Self, TypeVar
 
-from template.persistence.model.template import Template
+TModel = TypeVar("TModel")
 
 
-class HasFromModel(Protocol):
+class ModelDTO(Protocol[TModel]):
     @classmethod
-    def from_model(cls, model: Template) -> Self: ...
+    def from_model(cls, model: TModel) -> Self: ...
+
+    def to_model(self) -> TModel: ...

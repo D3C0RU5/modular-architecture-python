@@ -1,16 +1,21 @@
 import uuid
 
 from template.persistence.dao.template import TemplateDAO
-from template.persistence.model.template import Template
+from template.persistence.dto.template import TemplateDTO
 
 
 class CreateTemplateUseCase:
     def __init__(self, dao: TemplateDAO):
         self.dao = dao
 
-    def execute(self, name: str) -> Template:
-        entity = Template(id=uuid.uuid4(), name=name)
+    def execute(self, name: str) -> TemplateDTO:
+        input_dto = TemplateDTO(
+            id=uuid.uuid4(),
+            name=name,
+            created_at=None,
+            updated_at=None,
+        )
 
-        self.dao.create(id=entity.id, name=entity.name)
+        created = self.dao.create(object=input_dto)
 
-        return entity
+        return created

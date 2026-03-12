@@ -5,6 +5,7 @@ from injectq.integrations.fastapi import InjectFastAPI
 from template.http.rest.dto.create_template import (
     CreateTemplateRequestDTO,
     TemplateResponse,
+    TemplateResponseData,
 )
 from template.http.rest.dto.list_template import ListTemplatesResponse
 from template.utils.di_container import (
@@ -22,8 +23,8 @@ def create_template(
         CreateTemplateUseCaseSingleton, InjectFastAPI(CreateTemplateUseCaseSingleton)
     ],
 ):
-    use_case.execute(name=template.name)
-    return TemplateResponse(state="success", data=template.model_dump())
+    created = use_case.execute(name=template.name).to_dict()
+    return TemplateResponse(state="success", data=TemplateResponseData(**created))
 
 
 @router.get("/", response_model=ListTemplatesResponse)
